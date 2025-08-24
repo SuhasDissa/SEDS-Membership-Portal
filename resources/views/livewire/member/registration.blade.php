@@ -309,21 +309,20 @@ new #[Layout('components.layouts.registration')] class extends Component {
                                     <x-mary-input 
                                         wire:model="student_id" 
                                         label="Student ID" 
-                                        placeholder="e.g., 200123456" 
+                                        placeholder="e.g., 230123X" 
                                         icon="o-identification"
                                         required />
 
                                     <x-mary-select 
                                         wire:model="year" 
-                                        label="Academic Year" 
-                                        placeholder="Select Academic Year" 
+                                        label="Academic Batch" 
+                                        placeholder="Select Your Batch" 
                                         icon="o-academic-cap"
                                         :options="[
-                                            ['id' => '1', 'name' => '1st Year Undergraduate'],
-                                            ['id' => '2', 'name' => '2nd Year Undergraduate'],
-                                            ['id' => '3', 'name' => '3rd Year Undergraduate'],
-                                            ['id' => '4', 'name' => '4th Year Undergraduate'],
-                                            ['id' => 'graduate', 'name' => 'Graduate Student']
+                                            ['id' => '1', 'name' => 'Batch 24'],
+                                            ['id' => '2', 'name' => 'Batch 23'],
+                                            ['id' => '3', 'name' => 'Batch 22'],
+                                            ['id' => '4', 'name' => 'Batch 21'],
                                         ]"
                                         option-value="id"
                                         option-label="name"
