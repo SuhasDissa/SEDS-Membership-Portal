@@ -28,12 +28,21 @@
     </div>
 
     {{-- Add New Button --}}
-    <div class="mb-6" data-aos="fade-up" data-aos-delay="200">
-        <a href="{{ route('contributions.create') }}" class="btn btn-primary">
-            <x-icon name="o-plus-circle" class="w-5 h-5" />
-            Log New Activity
-        </a>
-    </div>
+    @if(auth()->user()->is_approved)
+        <div class="mb-6" data-aos="fade-up" data-aos-delay="200">
+            <a href="{{ route('contributions.create') }}" class="btn btn-primary">
+                <x-icon name="o-plus-circle" class="w-5 h-5" />
+                Log New Activity
+            </a>
+        </div>
+    @else
+        <div class="alert alert-info shadow-lg mb-6" data-aos="fade-up" data-aos-delay="200">
+            <div>
+                <x-icon name="o-information-circle" class="w-6 h-6" />
+                <span>Your account is pending approval. You'll be able to log activities once approved.</span>
+            </div>
+        </div>
+    @endif
 
     {{-- Contributions List --}}
     <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up" data-aos-delay="400">
@@ -77,10 +86,14 @@
                 <div class="text-center py-12">
                     <x-icon name="o-inbox" class="w-16 h-16 mx-auto text-base-content/30 mb-4" />
                     <p class="text-base-content/70 mb-4">No contributions yet</p>
-                    <a href="{{ route('contributions.create') }}" class="btn btn-primary">
-                        <x-icon name="o-plus-circle" class="w-5 h-5" />
-                        Log Your First Activity
-                    </a>
+                    @if(auth()->user()->is_approved)
+                        <a href="{{ route('contributions.create') }}" class="btn btn-primary">
+                            <x-icon name="o-plus-circle" class="w-5 h-5" />
+                            Log Your First Activity
+                        </a>
+                    @else
+                        <p class="text-base-content/50 text-sm">Waiting for account approval</p>
+                    @endif
                 </div>
             @endif
         </div>
