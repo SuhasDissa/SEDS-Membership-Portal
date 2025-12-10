@@ -1,38 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, computed};
-use App\Models\User;
-use App\Models\Contribution;
-use App\Models\Post;
-
-layout('components.layouts.app');
-title('Admin Dashboard');
-
-$stats = computed(function () {
-    return [
-        'total_users' => User::count(),
-        'approved_users' => User::where('is_approved', true)->count(),
-        'pending_users' => User::where('is_approved', false)->count(),
-        'total_contributions' => Contribution::count(),
-        'pending_contributions' => Contribution::where('status', 'pending')->count(),
-        'total_posts' => Post::count(),
-    ];
-});
-
-$recentUsers = computed(function () {
-    return User::latest()->take(5)->get();
-});
-
-$pendingContributions = computed(function () {
-    return Contribution::with('user')
-        ->where('status', 'pending')
-        ->latest()
-        ->take(5)
-        ->get();
-});
-
-?>
-
 <div class="p-6">
     {{-- Header --}}
     <div class="mb-6">

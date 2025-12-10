@@ -1,19 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, state, mount};
-use App\Models\User;
-
-layout('components.layouts.app');
-
-state(['user']);
-
-mount(function (User $user) {
-    $this->user = $user;
-    $this->title = $user->name . ' - Profile';
-});
-
-?>
-
 <div class="p-6">
     {{-- Back Button --}}
     <div class="mb-6">

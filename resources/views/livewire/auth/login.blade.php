@@ -1,35 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, state, rules};
-use function Laravel\Fortify\Features;
-
-layout('components.layouts.guest');
-title('Login');
-
-state(['email' => '', 'password' => '', 'remember' => false]);
-
-rules(['email' => 'required|email', 'password' => 'required']);
-
-$login = function () {
-    $this->validate();
-    
-    if (auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-        request()->session()->regenerate();
-        
-        $user = auth()->user();
-        
-        if (!$user->hasCompletedProfile()) {
-            return redirect()->route('onboarding');
-        }
-        
-        return redirect()->intended(route('dashboard'));
-    }
-    
-    $this->addError('email', 'The provided credentials do not match our records.');
-};
-
-?>
-
 <div class="min-h-screen bg-base-200 flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-md">
         <div data-aos="fade-up">
@@ -47,31 +15,31 @@ $login = function () {
                 <div class="card-body">
                     <form wire:submit="login">
                         {{-- Email --}}
-                        <x-input 
-                            label="Email" 
-                            wire:model="email" 
-                            type="email" 
-                            icon="o-envelope" 
+                        <x-input
+                            label="Email"
+                            wire:model="email"
+                            type="email"
+                            icon="o-envelope"
                             placeholder="your@email.com"
                             inline
                         />
-                        
+
                         {{-- Password --}}
-                        <x-input 
-                            label="Password" 
-                            wire:model="password" 
-                            type="password" 
-                            icon="o-key" 
+                        <x-input
+                            label="Password"
+                            wire:model="password"
+                            type="password"
+                            icon="o-key"
                             placeholder="••••••••"
                             inline
                         />
-                        
+
                         {{-- Remember Me --}}
-                        <x-checkbox 
-                            label="Remember me" 
-                            wire:model="remember" 
+                        <x-checkbox
+                            label="Remember me"
+                            wire:model="remember"
                         />
-                        
+
                         {{-- Submit Button --}}
                         <div class="mt-6">
                             <button type="submit" class="btn btn-primary w-full">
@@ -80,10 +48,10 @@ $login = function () {
                             </button>
                         </div>
                     </form>
-                    
+
                     {{-- Divider --}}
                     <div class="divider">OR</div>
-                    
+
                     {{-- Google Sign-In --}}
                     <a href="{{ route('auth.google.redirect') }}" class="btn btn-outline w-full">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -94,17 +62,17 @@ $login = function () {
                         </svg>
                         Continue with Google
                     </a>
-                    
+
                     {{-- Register Link --}}
                     <div class="text-center mt-4">
                         <p class="text-sm text-base-content/70">
-                            Don't have an account? 
+                            Don't have an account?
                             <a href="{{ route('register') }}" class="link link-primary">Register here</a>
                         </p>
                     </div>
                 </div>
             </div>
-            
+
             {{-- Back to Home --}}
             <div class="text-center mt-4">
                 <a href="{{ route('landing') }}" class="link link-primary">

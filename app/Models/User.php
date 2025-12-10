@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -28,6 +28,9 @@ class User extends Authenticatable
         'department',
         'phone',
         'avatar_url',
+        'bio',
+        'skills',
+        'interests',
         'is_admin',
         'is_approved',
         'google_id',
@@ -57,6 +60,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_approved' => 'boolean',
+            'skills' => 'array',
+            'interests' => 'array',
         ];
     }
 
@@ -88,7 +93,17 @@ class User extends Authenticatable
      */
     public function getAvatarAttribute(): string
     {
-        return $this->avatar_url ?? "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=random";
+        if (!$this->avatar_url) {
+            return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=random";
+        }
+
+        // If it's a full URL (Google avatar), return it as is
+        if (filter_var($this->avatar_url, FILTER_VALIDATE_URL)) {
+            return $this->avatar_url;
+        }
+
+        // Otherwise, it's a storage path, return the public URL
+        return asset('storage/' . $this->avatar_url);
     }
 
     /**

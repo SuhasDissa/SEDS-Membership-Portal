@@ -20,9 +20,9 @@ $user = computed(fn () => auth()->user());
         {{-- Profile Card --}}
         <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-right">
             <div class="card-body items-center text-center">
-                <div class="avatar placeholder mb-4">
-                    <div class="bg-primary text-primary-content rounded-full w-32">
-                        <span class="text-4xl">{{ $this->user->initials() }}</span>
+                <div class="avatar mb-4">
+                    <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <img src="{{ $this->user->avatar }}" alt="{{ $this->user->name }}" />
                     </div>
                 </div>
                 
@@ -50,6 +50,57 @@ $user = computed(fn () => auth()->user());
 
         {{-- Details --}}
         <div class="lg:col-span-2 space-y-6">
+            {{-- Bio Section --}}
+            @if($this->user->bio)
+                <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-left">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">
+                            <x-icon name="o-document-text" class="w-6 h-6" />
+                            About Me
+                        </h3>
+                        <p class="text-base-content">{{ $this->user->bio }}</p>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Skills & Interests --}}
+            @if($this->user->skills || $this->user->interests)
+                <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-left">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">
+                            <x-icon name="o-sparkles" class="w-6 h-6" />
+                            Skills & Interests
+                        </h3>
+
+                        @if($this->user->skills)
+                            <div class="mb-4">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Skills</span>
+                                </label>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($this->user->skills as $skill)
+                                        <span class="badge badge-primary badge-lg">{{ $skill }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($this->user->interests)
+                            <div>
+                                <label class="label">
+                                    <span class="label-text font-semibold">Interests</span>
+                                </label>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($this->user->interests as $interest)
+                                        <span class="badge badge-accent badge-lg">{{ $interest }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
             {{-- Personal Information --}}
             <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-left">
                 <div class="card-body">

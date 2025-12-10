@@ -1,78 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, state, computed, mount, on};
-use App\Models\Post;
-use App\Models\Contribution;
-
-layout('components.layouts.app');
-title('Dashboard');
-
-state(['showContributionModal' => false]);
-state(['contributionTitle' => '', 'contributionDescription' => '', 'contributionDate' => '']);
-
-mount(function () {
-    $this->contributionDate = now()->format('Y-m-d');
-});
-
-$posts = computed(function () {
-    return Post::with('user')
-        ->latest()
-        ->take(10)
-        ->get();
-});
-
-$monthlyContributions = computed(function () {
-    return auth()->user()
-        ->contributions()
-        ->whereMonth('date', now()->month)
-        ->whereYear('date', now()->year)
-        ->get();
-});
-
-$contributionStats = computed(function () {
-    $user = auth()->user();
-    
-    return [
-        'total' => $user->contributions()->count(),
-        'approved' => $user->contributions()->where('status', 'approved')->count(),
-        'pending' => $user->contributions()->where('status', 'pending')->count(),
-        'this_month' => $user->contributions()
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->count(),
-    ];
-});
-
-$submitContribution = function () {
-    $this->validate([
-        'contributionTitle' => 'required|string|max:255',
-        'contributionDescription' => 'required|string',
-        'contributionDate' => 'required|date',
-    ]);
-    
-    auth()->user()->contributions()->create([
-        'title' => $this->contributionTitle,
-        'description' => $this->contributionDescription,
-        'date' => $this->contributionDate,
-        'status' => 'pending',
-    ]);
-    
-    $this->showContributionModal = false;
-    $this->contributionTitle = '';
-    $this->contributionDescription = '';
-    $this->contributionDate = now()->format('Y-m-d');
-    
-    session()->flash('success', 'Contribution logged successfully!');
-    
-    $this->dispatch('contribution-added');
-};
-
-on(['contribution-added' => function () {
-    // Refresh computed properties
-}]);
-
-?>
-
 <div class="p-6">
     {{-- Welcome Section --}}
     <div class="mb-6" data-aos="fade-down">
@@ -118,7 +43,7 @@ on(['contribution-added' => function () {
                         <x-icon name="o-newspaper" class="w-6 h-6" />
                         Community Feed
                     </h2>
-                    
+
                     @if($this->posts->count() > 0)
                         <div class="space-y-4">
                             @foreach($this->posts as $post)
@@ -162,7 +87,7 @@ on(['contribution-added' => function () {
                         <x-icon name="o-trophy" class="w-6 h-6" />
                         Contribution Tracker
                     </h2>
-                    
+
                     <div class="stats stats-vertical shadow bg-base-200 text-base-content">
                         <div class="stat">
                             <div class="stat-title">This Month</div>
@@ -170,9 +95,9 @@ on(['contribution-added' => function () {
                             <div class="stat-desc">{{ $this->monthlyContributions->where('status', 'approved')->count() }} approved</div>
                         </div>
                     </div>
-                    
-                    <button 
-                        wire:click="$set('showContributionModal', true)" 
+
+                    <button
+                        wire:click="$set('showContributionModal', true)"
                         class="btn btn-primary w-full mt-4"
                     >
                         <x-icon name="o-plus-circle" class="w-5 h-5" />
@@ -188,7 +113,7 @@ on(['contribution-added' => function () {
                         <x-icon name="o-list-bullet" class="w-5 h-5" />
                         Recent Activities
                     </h3>
-                    
+
                     @if($this->monthlyContributions->count() > 0)
                         <ul class="space-y-2">
                             @foreach($this->monthlyContributions->take(5) as $contribution)
@@ -208,7 +133,7 @@ on(['contribution-added' => function () {
                     @else
                         <p class="text-sm text-base-content/70 text-center py-4">No activities this month</p>
                     @endif
-                    
+
                     <a href="{{ route('contributions.index') }}" class="btn btn-sm btn-outline w-full mt-4">
                         View All
                     </a>

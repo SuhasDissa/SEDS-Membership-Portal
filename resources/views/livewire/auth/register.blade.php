@@ -1,35 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, state, rules};
-use App\Models\User;
-
-layout('components.layouts.guest');
-title('Register');
-
-state(['name' => '', 'email' => '', 'password' => '', 'password_confirmation' => '']);
-
-rules([
-    'name' => 'required|string|max:255',
-    'email' => 'required|email|unique:users,email',
-    'password' => 'required|min:8|confirmed',
-]);
-
-$register = function () {
-    $this->validate();
-    
-    $user = User::create([
-        'name' => $this->name,
-        'email' => $this->email,
-        'password' => bcrypt($this->password),
-    ]);
-    
-    auth()->login($user);
-    
-    return redirect()->route('onboarding');
-};
-
-?>
-
 <div class="min-h-screen bg-base-200 flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-md">
         <div data-aos="fade-up">
@@ -47,45 +15,48 @@ $register = function () {
                 <div class="card-body">
                     <form wire:submit="register">
                         {{-- Name --}}
-                        <x-input 
-                            label="Full Name" 
-                            wire:model="name" 
-                            icon="o-user" 
+                        <x-input
+                            label="Full Name"
+                            wire:model.blur="name"
+                            icon="o-user"
                             placeholder="John Doe"
+                            hint="At least 3 characters, letters and spaces only"
                             inline
                         />
-                        
+
                         {{-- Email --}}
-                        <x-input 
-                            label="Email" 
-                            wire:model="email" 
-                            type="email" 
-                            icon="o-envelope" 
+                        <x-input
+                            label="Email"
+                            wire:model.blur="email"
+                            type="email"
+                            icon="o-envelope"
                             placeholder="your@email.com"
+                            hint="We'll send a verification email"
                             inline
                         />
-                        
+
                         {{-- Password --}}
-                        <x-input 
-                            label="Password" 
-                            wire:model="password" 
-                            type="password" 
-                            icon="o-key" 
+                        <x-input
+                            label="Password"
+                            wire:model.blur="password"
+                            type="password"
+                            icon="o-key"
                             placeholder="••••••••"
-                            hint="Minimum 8 characters"
+                            hint="Min 8 characters with uppercase, lowercase, and number"
                             inline
                         />
-                        
+
                         {{-- Confirm Password --}}
-                        <x-input 
-                            label="Confirm Password" 
-                            wire:model="password_confirmation" 
-                            type="password" 
-                            icon="o-key" 
+                        <x-input
+                            label="Confirm Password"
+                            wire:model.blur="password_confirmation"
+                            type="password"
+                            icon="o-key"
                             placeholder="••••••••"
+                            hint="Must match password"
                             inline
                         />
-                        
+
                         {{-- Submit Button --}}
                         <div class="mt-6">
                             <button type="submit" class="btn btn-primary w-full">
@@ -94,10 +65,10 @@ $register = function () {
                             </button>
                         </div>
                     </form>
-                    
+
                     {{-- Divider --}}
                     <div class="divider">OR</div>
-                    
+
                     {{-- Google Sign-In --}}
                     <a href="{{ route('auth.google.redirect') }}" class="btn btn-outline w-full">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -108,17 +79,17 @@ $register = function () {
                         </svg>
                         Continue with Google
                     </a>
-                    
+
                     {{-- Login Link --}}
                     <div class="text-center mt-4">
                         <p class="text-sm text-base-content/70">
-                            Already have an account? 
+                            Already have an account?
                             <a href="{{ route('login') }}" class="link link-primary">Login here</a>
                         </p>
                     </div>
                 </div>
             </div>
-            
+
             {{-- Back to Home --}}
             <div class="text-center mt-4">
                 <a href="{{ route('landing') }}" class="link link-primary">

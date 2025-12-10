@@ -1,29 +1,3 @@
-<?php
-
-use function Livewire\Volt\{layout, title, computed};
-
-layout('components.layouts.app');
-title('My Contributions');
-
-$contributions = computed(function () {
-    return auth()->user()
-        ->contributions()
-        ->latest('date')
-        ->get();
-});
-
-$stats = computed(function () {
-    $user = auth()->user();
-    
-    return [
-        'total' => $user->contributions()->count(),
-        'approved' => $user->contributions()->where('status', 'approved')->count(),
-        'pending' => $user->contributions()->where('status', 'pending')->count(),
-    ];
-});
-
-?>
-
 <div class="p-6">
     {{-- Header --}}
     <div class="mb-6" data-aos="fade-down">
