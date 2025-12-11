@@ -132,13 +132,13 @@
                     placeholder="Provide a reason for rejection (will be visible to the member)..." rows="4"
                     hint="This will be sent to the member" />
 
-                <div class="modal-action">
+                <!-- <div class="modal-action">
                     <button wire:click="rejectContribution" class="btn btn-error">
                         <x-icon name="o-x-mark" class="w-5 h-5" />
                         Reject
                     </button>
                     <button wire:click="$set('showRejectModal', false)" class="btn btn-ghost">Cancel</button>
-                </div>
+                </div> -->
             </div>
             <div class="modal-backdrop" wire:click="$set('showRejectModal', false)"></div>
         </div>

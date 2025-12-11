@@ -50,9 +50,9 @@
                                 <div class="card bg-base-200 {{ $post->is_featured ? 'ring-2 ring-accent' : '' }}">
                                     <div class="card-body">
                                         <div class="flex items-start gap-4">
-                                            <div class="avatar placeholder">
-                                                <div class="bg-primary text-primary-content rounded-full w-12">
-                                                    <span class="text-xl">{{ $post->user->initials() }}</span>
+                                            <div class="avatar">
+                                                <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                                    <img src="{{ $post->user->avatar }}" alt="{{ $post->user->name }}" />
                                                 </div>
                                             </div>
                                             <div class="flex-1">
@@ -108,13 +108,6 @@
                         </div>
                     </div>
 
-                    <button
-                        wire:click="$set('showContributionModal', true)"
-                        class="btn btn-primary w-full mt-4"
-                    >
-                        <x-icon name="o-plus-circle" class="w-5 h-5" />
-                        Log Activity
-                    </button>
                 </div>
             </div>
 
