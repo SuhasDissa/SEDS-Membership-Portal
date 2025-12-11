@@ -1,4 +1,21 @@
 <div class="p-6">
+    {{-- Check if user is approved --}}
+    @if(!auth()->user()->is_approved)
+        <div class="alert alert-warning shadow-lg mb-6" data-aos="fade-down">
+            <div>
+                <x-icon name="o-exclamation-triangle" class="w-6 h-6" />
+                <span>
+                    <strong>Approval Required</strong><br>
+                    Your account has not been approved yet. Please wait for admin approval before logging contributions.
+                </span>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <a href="{{ route('contributions.index') }}" class="btn btn-ghost">
+                Back to Contributions
+            </a>
+        </div>
+    @else
     {{-- Header --}}
     <div class="mb-6" data-aos="fade-down">
         <h1 class="text-3xl font-bold text-base-content">Log New Activity</h1>
@@ -44,4 +61,5 @@
             </div>
         </div>
     </div>
+    @endif
 </div>

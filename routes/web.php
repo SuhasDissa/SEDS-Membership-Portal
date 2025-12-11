@@ -12,7 +12,7 @@ Route::view('/', 'pages.landing')->name('landing');
 Route::middleware('guest')->group(function () {
     Route::view('/register', 'pages.auth.register')->name('register');
     Route::view('/login', 'pages.auth.login')->name('login');
-    
+
     // Google OAuth
     Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('auth.google.redirect');
     Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -50,13 +50,13 @@ Route::middleware('auth')->group(function () {
 
     // Onboarding/Profile Completion (accessible even without completed profile)
     Route::view('/onboarding', 'pages.onboarding.complete-profile')->name('onboarding');
-    
+
     // Routes that require completed profile
     Route::middleware('profile.completed')->group(function () {
-        
+
         // Student Dashboard
         Route::view('/dashboard', 'pages.dashboard.index')->name('dashboard');
-        
+
         // Profile & Settings
         Route::view('/profile', 'pages.profile.show')->name('profile.show');
         Route::view('/settings', 'pages.settings.index')->name('settings');
@@ -64,7 +64,10 @@ Route::middleware('auth')->group(function () {
         // Contributions
         Route::view('/contributions', 'pages.contributions.index')->name('contributions.index');
         Route::view('/contributions/create', 'pages.contributions.create')->name('contributions.create');
-        
+        Route::get('/contributions/{contribution}/edit', function (\App\Models\Contribution $contribution) {
+            return view('pages.contributions.edit', compact('contribution'));
+        })->name('contributions.edit');
+
         // Admin Routes (Protected by admin middleware)
         Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
             Route::view('/', 'pages.admin.dashboard')->name('dashboard');

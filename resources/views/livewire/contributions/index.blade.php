@@ -7,33 +7,30 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" data-aos="fade-up">
-        <x-stat
-            title="Total Contributions"
-            :value="$this->stats['total']"
-            icon="o-chart-bar"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Approved"
-            :value="$this->stats['approved']"
-            icon="o-check-circle"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Pending Review"
-            :value="$this->stats['pending']"
-            icon="o-clock"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
+        <x-stat title="Total Contributions" :value="$this->stats['total']" icon="o-chart-bar"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
+        <x-stat title="Approved" :value="$this->stats['approved']" icon="o-check-circle"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
+        <x-stat title="Pending Review" :value="$this->stats['pending']" icon="o-clock"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
     </div>
 
     {{-- Add New Button --}}
-    <div class="mb-6" data-aos="fade-up" data-aos-delay="200">
-        <a href="{{ route('contributions.create') }}" class="btn btn-primary">
-            <x-icon name="o-plus-circle" class="w-5 h-5" />
-            Log New Activity
-        </a>
-    </div>
+    @if(auth()->user()->is_approved)
+        <div class="mb-6" data-aos="fade-up" data-aos-delay="200">
+            <a href="{{ route('contributions.create') }}" class="btn btn-primary">
+                <x-icon name="o-plus-circle" class="w-5 h-5" />
+                Log New Activity
+            </a>
+        </div>
+    @else
+        <div class="alert alert-info shadow-lg mb-6" data-aos="fade-up" data-aos-delay="200">
+            <div>
+                <x-icon name="o-information-circle" class="w-6 h-6" />
+                <span>Your account is pending approval. You'll be able to log activities once approved.</span>
+            </div>
+        </div>
+    @endif
 
     {{-- Contributions List --}}
     <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up" data-aos-delay="400">
@@ -47,6 +44,7 @@
                                 <th>Description</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,6 +66,16 @@
                                             </span>
                                         @endif
                                     </td>
+                                    <td>
+                                        @if($contribution->status === 'pending')
+                                            <a href="{{ route('contributions.edit', $contribution) }}" class="btn btn-sm btn-ghost">
+                                                <x-icon name="o-pencil" class="w-4 h-4" />
+                                                Edit
+                                            </a>
+                                        @else
+                                            <span class="text-base-content/50 text-sm">N/A</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -77,10 +85,14 @@
                 <div class="text-center py-12">
                     <x-icon name="o-inbox" class="w-16 h-16 mx-auto text-base-content/30 mb-4" />
                     <p class="text-base-content/70 mb-4">No contributions yet</p>
-                    <a href="{{ route('contributions.create') }}" class="btn btn-primary">
-                        <x-icon name="o-plus-circle" class="w-5 h-5" />
-                        Log Your First Activity
-                    </a>
+                    @if(auth()->user()->is_approved)
+                        <a href="{{ route('contributions.create') }}" class="btn btn-primary">
+                            <x-icon name="o-plus-circle" class="w-5 h-5" />
+                            Log Your First Activity
+                        </a>
+                    @else
+                        <p class="text-base-content/50 text-sm">Waiting for account approval</p>
+                    @endif
                 </div>
             @endif
         </div>
