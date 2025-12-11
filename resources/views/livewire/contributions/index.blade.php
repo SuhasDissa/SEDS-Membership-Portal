@@ -7,24 +7,12 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" data-aos="fade-up">
-        <x-stat
-            title="Total Contributions"
-            :value="$this->stats['total']"
-            icon="o-chart-bar"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Approved"
-            :value="$this->stats['approved']"
-            icon="o-check-circle"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Pending Review"
-            :value="$this->stats['pending']"
-            icon="o-clock"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
+        <x-stat title="Total Contributions" :value="$this->stats['total']" icon="o-chart-bar"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
+        <x-stat title="Approved" :value="$this->stats['approved']" icon="o-check-circle"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
+        <x-stat title="Pending Review" :value="$this->stats['pending']" icon="o-clock"
+            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
     </div>
 
     {{-- Add New Button --}}
@@ -56,6 +44,7 @@
                                 <th>Description</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,6 +64,16 @@
                                                 <x-icon name="o-clock" class="w-4 h-4" />
                                                 Pending
                                             </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($contribution->status === 'pending')
+                                            <a href="{{ route('contributions.edit', $contribution) }}" class="btn btn-sm btn-ghost">
+                                                <x-icon name="o-pencil" class="w-4 h-4" />
+                                                Edit
+                                            </a>
+                                        @else
+                                            <span class="text-base-content/50 text-sm">N/A</span>
                                         @endif
                                     </td>
                                 </tr>

@@ -41,4 +41,20 @@ class Contribution extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Check if the contribution is editable (pending status)
+     */
+    public function isEditable(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    /**
+     * Check if the contribution belongs to the given user
+     */
+    public function belongsToUser(User $user): bool
+    {
+        return $this->user_id === $user->id;
+    }
 }
