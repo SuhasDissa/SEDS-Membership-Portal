@@ -99,19 +99,37 @@
                 
                 @if($this->pendingContributions->count() > 0)
                     <div class="space-y-2">
-                        @foreach($this->pendingContributions as $contribution)
+                       @foreach($this->pendingContributions as $contribution)
                             <div class="p-3 bg-base-200 rounded-lg">
-                                <div class="flex items-start justify-between">
+                                <div class="flex items-start justify-between gap-4">
                                     <div class="flex-1">
                                         <p class="font-medium">{{ $contribution->title }}</p>
                                         <p class="text-sm text-base-content/70">{{ $contribution->user->name }}</p>
                                         <p class="text-xs text-base-content/60 mt-1">{{ $contribution->date->format('M d, Y') }}</p>
                                     </div>
-                                    <span class="badge badge-warning badge-sm">Pending</span>
+                                    <div class="flex gap-2">
+                                        <button 
+                                            wire:click="approveContribution({{ $contribution->id }})"
+                                            class="btn btn-success btn-sm"
+                                            title="Approve">
+                                            <x-icon name="o-check" class="w-4 h-4" />
+                                        </button>
+                                        <button 
+                                            wire:click="rejectContribution({{ $contribution->id }})"
+                                            wire:confirm="Reject this contribution?"
+                                            class="btn btn-error btn-sm"
+                                            title="Reject">
+                                            <x-icon name="o-x-mark" class="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+                    
+                    <a href="{{ route('admin.contributions') }}" class="btn btn-outline btn-sm w-full mt-4">
+                        View All Contributions
+                    </a>
                 @else
                     <p class="text-center text-base-content/70 py-8">No pending contributions</p>
                 @endif
@@ -127,16 +145,20 @@
                 Quick Actions
             </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
                 <a href="{{ route('admin.members') }}" class="btn btn-primary">
                     <x-icon name="o-users" class="w-5 h-5" />
                     Manage Members
                 </a>
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary">
-                    <x-icon name="o-home" class="w-5 h-5" />
-                    View Dashboard
+                <a href="{{ route('admin.contributions') }}" class="btn btn-secondary">
+                    <x-icon name="o-chart-bar" class="w-5 h-5" />
+                    Manage Contributions
                 </a>
-                <a href="{{ route('settings') }}" class="btn btn-accent">
+                <a href="{{ route('admin.posts') }}" class="btn btn-accent">
+                    <x-icon name="o-newspaper" class="w-5 h-5" />
+                    Manage Posts
+                </a>
+                <a href="{{ route('settings') }}" class="btn btn-ghost">
                     <x-icon name="o-cog-6-tooth" class="w-5 h-5" />
                     Settings
                 </a>

@@ -17,7 +17,10 @@ class Dashboard extends Component
             'pending_users' => User::where('is_approved', false)->count(),
             'total_contributions' => Contribution::count(),
             'pending_contributions' => Contribution::where('status', 'pending')->count(),
+            'approved_contributions' => Contribution::where('status', 'approved')->count(),
+            'rejected_contributions' => Contribution::where('status', 'rejected')->count(),
             'total_posts' => Post::count(),
+            'published_posts' => Post::where('status', 'published')->count(),
         ];
     }
 
@@ -33,6 +36,22 @@ class Dashboard extends Component
             ->latest()
             ->take(5)
             ->get();
+    }
+
+    public function approveContribution($contributionId)
+    {
+        $contribution = Contribution::findOrFail($contributionId);
+        $contribution->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        session()->flash('success', "Contribution approved successfully!");
+    }
+
+    public function rejectContribution($contributionId)
+    {
+        $contribution = Contribution::findOrFail($contributionId);
+        $contribution->update(['status' => 'rejected', 'rejection_reason' => 'Rejected from dashboard']);
+
+        session()->flash('success', "Contribution rejected.");
     }
 
     public function render()

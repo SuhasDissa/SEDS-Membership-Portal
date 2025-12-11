@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/members/{user}', function (\App\Models\User $user) {
                 return view('pages.admin.members.show', compact('user'));
             })->name('members.show');
+            Route::view('/contributions', 'pages.admin.contributions')->name('contributions');
+            Route::view('/posts', 'pages.admin.posts')->name('posts');
         });
     });
 });

@@ -22,6 +22,7 @@ class Index extends Component
     public function getPostsProperty()
     {
         return Post::with('user')
+            ->published()
             ->latest()
             ->take(10)
             ->get();
