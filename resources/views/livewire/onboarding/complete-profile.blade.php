@@ -4,50 +4,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {{-- University ID --}}
                 <div class="md:col-span-2">
-                    <x-input 
-                        label="University ID" 
-                        wire:model.blur="university_id"
-                        icon="o-identification" 
-                        placeholder="230152X"
-                        hint="Format: 6 digits followed by a letter (e.g., 230152X)" 
-                        inline 
-                    />
+                    <x-input label="University ID" wire:model.blur="university_id" icon="o-identification"
+                        placeholder="230152X" hint="Format: 6 digits followed by a letter (e.g., 230152X)" inline />
                 </div>
 
                 {{-- Faculty --}}
                 <div class="md:col-span-2">
-                    <x-select 
-                        label="Faculty" 
-                        wire:model="faculty" 
-                        :options="$this->faculties()"
-                        placeholder="Select your faculty" 
-                        icon="o-academic-cap" 
-                        inline 
-                    />
+                    <x-select label="Faculty" wire:model="faculty" :options="$this->faculties()"
+                        placeholder="Select your faculty" icon="o-academic-cap" inline />
                 </div>
 
                 {{-- Department --}}
                 <div class="md:col-span-2">
-                    <x-input 
-                        label="Department" 
-                        wire:model.blur="department" 
-                        icon="o-building-library"
-                        placeholder="e.g., Computer Science & Engineering" 
-                        hint="At least 3 characters"
-                        inline 
-                    />
+                    <x-input label="Department" wire:model.blur="department" icon="o-building-library"
+                        placeholder="e.g., Computer Science & Engineering" hint="At least 3 characters" inline />
                 </div>
 
                 {{-- Phone --}}
                 <div class="md:col-span-2">
-                    <x-input 
-                        label="Phone Number" 
-                        wire:model.blur="phone" 
-                        icon="o-phone"
-                        placeholder="+94 77 123 4567" 
-                        hint="Include country code if applicable"
-                        inline 
-                    />
+                    <x-input label="Phone Number" wire:model.blur="phone" icon="o-phone" placeholder="+94 77 123 4567"
+                        hint="Include country code if applicable" inline />
                 </div>
 
                 {{-- Profile Photo Upload (Optional) --}}
@@ -58,17 +34,9 @@
                             Profile Photo (Optional)
                         </span>
                     </label>
-                    <x-file 
-                        wire:model="avatar" 
-                        accept="image/*" 
-                        crop-after-change
-                        hint="Max size: 2MB. Click to upload and crop your profile photo"
-                    >
-                        @if ($avatar_url)
-                            <img src="{{ $avatar_url }}" class="h-40 rounded-lg" alt="Current Avatar" />
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random" class="h-40 rounded-lg" alt="Default Avatar" />
-                        @endif
+                    <x-file wire:model="avatar" accept="image/*" crop-after-change
+                        hint="Max size: 2MB. Click to upload and crop your profile photo">
+                        <img src="{{ auth()->user()->avatar }}" class="h-40 rounded-lg" alt="Profile Avatar" />
                     </x-file>
                 </div>
             </div>

@@ -47,20 +47,32 @@
                     @if($this->posts->count() > 0)
                         <div class="space-y-4">
                             @foreach($this->posts as $post)
-                                <div class="card bg-base-200">
+                                <div class="card bg-base-200 {{ $post->is_featured ? 'ring-2 ring-accent' : '' }}">
                                     <div class="card-body">
                                         <div class="flex items-start gap-4">
-                                            <div class="avatar placeholder">
-                                                <div class="bg-primary text-primary-content rounded-full w-12">
-                                                    <span class="text-xl">{{ $post->user->initials() }}</span>
+                                            <div class="avatar">
+                                                <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                                    <img src="{{ $post->user->avatar }}" alt="{{ $post->user->name }}" />
                                                 </div>
                                             </div>
                                             <div class="flex-1">
-                                                <h3 class="font-bold">{{ $post->user->name }}</h3>
-                                                <p class="text-sm text-base-content/70">{{ $post->created_at->diffForHumans() }}</p>
-                                                <p class="mt-2">{{ $post->content }}</p>
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <h3 class="font-bold">{{ $post->user->name }}</h3>
+                                                    <span class="badge badge-ghost badge-sm">{{ $post->category_label }}</span>
+                                                    @if($post->is_featured)
+                                                        <span class="badge badge-accent badge-sm gap-1">
+                                                            <x-icon name="o-star" class="w-3 h-3" />
+                                                            Featured
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-sm text-base-content/70 mb-2">{{ $post->created_at->diffForHumans() }}</p>
+                                                
+                                                <h4 class="text-lg font-bold mb-2">{{ $post->title }}</h4>
+                                                <p class="whitespace-pre-line">{{ $post->content }}</p>
+                                                
                                                 @if($post->image_url)
-                                                    <img src="{{ $post->image_url }}" alt="Post image" class="mt-2 rounded-lg max-w-full" />
+                                                    <img src="{{ $post->image_url }}" alt="Post image" class="mt-3 rounded-lg max-w-full hover:scale-105 transition-transform cursor-pointer" />
                                                 @endif
                                             </div>
                                         </div>
@@ -71,7 +83,7 @@
                     @else
                         <div class="text-center py-12">
                             <x-icon name="o-inbox" class="w-16 h-16 mx-auto text-base-content/30 mb-4" />
-                            <p class="text-base-content/70">No posts yet. Be the first to share something!</p>
+                            <p class="text-base-content/70">No posts yet in the community feed</p>
                         </div>
                     @endif
                 </div>
@@ -96,13 +108,6 @@
                         </div>
                     </div>
 
-                    <button
-                        wire:click="$set('showContributionModal', true)"
-                        class="btn btn-primary w-full mt-4"
-                    >
-                        <x-icon name="o-plus-circle" class="w-5 h-5" />
-                        Log Activity
-                    </button>
                 </div>
             </div>
 

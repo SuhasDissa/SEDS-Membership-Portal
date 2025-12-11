@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
         Route::view('/profile', 'pages.profile.show')->name('profile.show');
         Route::view('/settings', 'pages.settings.index')->name('settings');
 
+        // Notifications
+        Route::view('/notifications', 'pages.notifications')->name('notifications');
+
         // Contributions
         Route::view('/contributions', 'pages.contributions.index')->name('contributions.index');
         Route::view('/contributions/create', 'pages.contributions.create')->name('contributions.create');
@@ -75,6 +78,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/members/{user}', function (\App\Models\User $user) {
                 return view('pages.admin.members.show', compact('user'));
             })->name('members.show');
+            Route::view('/contributions', 'pages.admin.contributions')->name('contributions');
+            Route::view('/posts', 'pages.admin.posts')->name('posts');
+            Route::view('/activity-logs', 'pages.admin.activity-logs')->name('activity-logs');
         });
     });
 });

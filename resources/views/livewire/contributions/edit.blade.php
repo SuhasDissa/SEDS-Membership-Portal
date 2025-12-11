@@ -1,7 +1,7 @@
 <div class="p-6">
     {{-- Check if user is approved --}}
     @if(!auth()->user()->is_approved)
-        <div class="alert alert-warning shadow-lg mb-6" data-aos="fade-down">
+        <div class="alert alert-warning shadow-lg mb-6">
             <div>
                 <x-icon name="o-exclamation-triangle" class="w-6 h-6" />
                 <span>
@@ -17,7 +17,7 @@
         </div>
     @else
         {{-- Header --}}
-        <div class="mb-6" data-aos="fade-down">
+        <div class="mb-6">
             <h1 class="text-3xl font-bold text-base-content">Edit Activity</h1>
             <p class="text-base-content/70">Update your contribution details</p>
 
@@ -36,7 +36,7 @@
         </div>
 
         <div class="max-w-2xl">
-            <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up">
+            <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
                 <div class="card-body">
                     <form wire:submit="update">
                         <x-input label="Activity Title" wire:model="title"

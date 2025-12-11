@@ -20,6 +20,7 @@ class Contribution extends Model
         'description',
         'date',
         'status',
+        'rejection_reason',
     ];
 
     /**
