@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Contribution;
+use App\Models\ActivityLog;
 use Livewire\Component;
 
 class Contributions extends Component
@@ -12,6 +13,12 @@ class Contributions extends Component
     public $showRejectModal = false;
     public $selectedContributionId = null;
     public $rejectionReason = '';
+
+    // Bulk actions
+    public $selectedIds = [];
+    public $selectAll = false;
+    public $showBulkRejectModal = false;
+    public $bulkRejectionReason = '';
 
     public function getContributionsProperty()
     {
@@ -51,6 +58,11 @@ class Contributions extends Component
             'rejection_reason' => null,
         ]);
 
+        ActivityLog::log('approved_contribution', $contribution, [
+            'title' => $contribution->title,
+            'member' => $contribution->user->name,
+        ]);
+
         session()->flash('success', "Contribution '{$contribution->title}' has been approved!");
     }
 
@@ -87,6 +99,74 @@ class Contributions extends Component
         $contribution->delete();
 
         session()->flash('success', "Contribution '{$title}' has been deleted.");
+    }
+
+    // Bulk Actions
+    public function bulkApprove()
+    {
+        if (empty($this->selectedIds)) {
+            session()->flash('error', 'No contributions selected.');
+            return;
+        }
+
+        Contribution::whereIn('id', $this->selectedIds)
+            ->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        $count = count($this->selectedIds);
+        session()->flash('success', "{$count} contribution(s) approved successfully!");
+
+        $this->selectedIds = [];
+    }
+
+    public function openBulkRejectModal()
+    {
+        if (empty($this->selectedIds)) {
+            session()->flash('error', 'No contributions selected.');
+            return;
+        }
+
+        $this->bulkRejectionReason = '';
+        $this->showBulkRejectModal = true;
+    }
+
+    public function bulkReject()
+    {
+        $this->validate([
+            'bulkRejectionReason' => 'required|string|max:500',
+        ]);
+
+        if (empty($this->selectedIds)) {
+            session()->flash('error', 'No contributions selected.');
+            return;
+        }
+
+        Contribution::whereIn('id', $this->selectedIds)
+            ->update([
+                'status' => 'rejected',
+                'rejection_reason' => $this->bulkRejectionReason,
+            ]);
+
+        $count = count($this->selectedIds);
+        session()->flash('success', "{$count} contribution(s) rejected.");
+
+        $this->selectedIds = [];
+        $this->showBulkRejectModal = false;
+        $this->bulkRejectionReason = '';
+    }
+
+    public function bulkDelete()
+    {
+        if (empty($this->selectedIds)) {
+            session()->flash('error', 'No contributions selected.');
+            return;
+        }
+
+        Contribution::whereIn('id', $this->selectedIds)->delete();
+
+        $count = count($this->selectedIds);
+        session()->flash('success', "{$count} contribution(s) deleted.");
+
+        $this->selectedIds = [];
     }
 
     public function render()

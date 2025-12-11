@@ -73,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -82,9 +82,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasCompletedProfile(): bool
     {
-        return !is_null($this->university_id) 
-            && !is_null($this->faculty) 
-            && !is_null($this->department) 
+        return !is_null($this->university_id)
+            && !is_null($this->faculty)
+            && !is_null($this->department)
             && !is_null($this->phone);
     }
 
@@ -120,5 +120,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Notifications relationship
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Activity logs relationship
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 }

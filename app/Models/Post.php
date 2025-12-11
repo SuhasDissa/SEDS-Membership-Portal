@@ -74,4 +74,35 @@ class Post extends Model
             default => 'ℹ️ General',
         };
     }
+
+    /**
+     * Tags relationship
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    /**
+     * Sync tags from comma-separated string
+     */
+    public function syncTagsFromString(?string $tagString): void
+    {
+        if (empty($tagString)) {
+            $this->tags()->detach();
+            return;
+        }
+
+        $tagNames = array_map('trim', explode(',', $tagString));
+        $tagIds = [];
+
+        foreach ($tagNames as $tagName) {
+            if (!empty($tagName)) {
+                $tag = Tag::findOrCreateFromString($tagName);
+                $tagIds[] = $tag->id;
+            }
+        }
+
+        $this->tags()->sync($tagIds);
+    }
 }
