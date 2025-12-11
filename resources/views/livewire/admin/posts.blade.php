@@ -1,6 +1,6 @@
 <div class="p-6">
     {{-- Header --}}
-    <div class="mb-6 flex justify-between items-center" data-aos="fade-down">
+    <div class="mb-6 flex justify-between items-center">
         <div>
             <h1 class="text-3xl font-bold text-base-content">Manage Posts</h1>
             <p class="text-base-content/70">Create and manage feed posts for members</p>
@@ -12,7 +12,7 @@
     </div>
 
     {{--Stats --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" data-aos="fade-up">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <x-stat title="Total Posts" :value="$this->stats['total']" icon="o-document-text"
             class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow" />
         <x-stat title="Published" :value="$this->stats['published']" icon="o-check-circle"
@@ -24,7 +24,7 @@
     </div>
 
     {{-- Filters --}}
-    <div class="card bg-base-100 shadow-sm mb-6" data-aos="fade-up" data-aos-delay="100">
+    <div class="card bg-base-100 shadow-sm mb-6">
         <div class="card-body">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <x-input label="Search" wire:model.live="search" placeholder="Search posts..." icon="o-magnifying-glass"
@@ -50,10 +50,10 @@
     </div>
 
     {{-- Posts List --}}
-    <div class="space-y-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="space-y-4">
         @if($this->posts->count() > 0)
             @foreach($this->posts as $post)
-                <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+                <div wire:key="post-{{ $post->id }}" class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
                     <div class="card-body">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">

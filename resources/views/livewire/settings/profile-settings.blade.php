@@ -1,12 +1,12 @@
 <div class="p-6">
     {{-- Header --}}
-    <div class="mb-6" data-aos="fade-down">
+    <div class="mb-6">
         <h1 class="text-3xl font-bold text-base-content">Settings</h1>
         <p class="text-base-content/70">Manage your account settings</p>
     </div>
 
     <div class="max-w-3xl">
-        <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up">
+        <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
             <div class="card-body">
                 <h2 class="card-title text-xl mb-4">Profile Information</h2>
 
