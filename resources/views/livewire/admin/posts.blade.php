@@ -138,8 +138,53 @@
             ]" />
                     </div>
 
-                    <x-input label="Image URL (Optional)" wire:model="image_url"
-                        placeholder="https://example.com/image.jpg" />
+                    {{-- Image Upload --}}
+                    <div class="form-control" x-data="{ imagePreview: null }">
+                        <label class="label">
+                            <span class="label-text">Post Image (Optional)</span>
+                        </label>
+                        <x-file 
+                            wire:model="image" 
+                            accept="image/*" 
+                            hint="Max size: 5MB. Supports JPEG, PNG, WebP"
+                            x-on:change="
+                                const file = $event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (e) => imagePreview = e.target.result;
+                                    reader.readAsDataURL(file);
+                                }
+                            "
+                        >
+                            <div wire:loading wire:target="image" class="flex items-center justify-center h-40 bg-base-200 rounded-lg">
+                                <div class="text-center">
+                                    <span class="loading loading-spinner loading-lg text-primary"></span>
+                                    <p class="text-sm text-base-content/50 mt-2">Uploading image...</p>
+                                </div>
+                            </div>
+                            
+                            <div wire:loading.remove wire:target="image">
+                                <template x-if="imagePreview">
+                                    <img :src="imagePreview" class="h-40 rounded-lg" alt="Preview" />
+                                </template>
+                                
+                                <template x-if="!imagePreview">
+                                    @if($image)
+                                        <img src="{{ $image->temporaryUrl() }}" class="h-40 rounded-lg" alt="Preview" />
+                                    @elseif($image_url)
+                                        <img src="{{ asset($image_url) }}" class="h-40 rounded-lg" alt="Current Image" />
+                                    @else
+                                        <div class="flex items-center justify-center h-40 bg-base-200 rounded-lg">
+                                            <div class="text-center">
+                                                <x-icon name="o-photo" class="w-12 h-12 mx-auto text-base-content/30 mb-2" />
+                                                <p class="text-sm text-base-content/50">Click to upload image</p>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </template>
+                            </div>
+                        </x-file>
+                    </div>
 
                     <x-input label="Tags (Optional)" wire:model="tags" placeholder="space, technology, research"
                         hint="Separate tags with commas. Tags help organize and categorize posts." />

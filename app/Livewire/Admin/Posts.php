@@ -4,9 +4,12 @@ namespace App\Livewire\Admin;
 
 use App\Models\Post;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Posts extends Component
 {
+    use WithFileUploads;
+
     public $search = '';
     public $statusFilter = 'all';
     public $categoryFilter = 'all';
@@ -19,7 +22,8 @@ class Posts extends Component
     public $category = 'general';
     public $status = 'published';
     public $is_featured = false;
-    public $image_url = '';
+    public $image = null; // Uploaded image file
+    public $image_url = ''; // Existing image URL
     public $tags = ''; // Comma-separated tags
 
     protected function rules()
@@ -30,6 +34,7 @@ class Posts extends Component
             'category' => 'required|string',
             'status' => 'required|in:draft,published',
             'is_featured' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
             'image_url' => 'nullable|url',
             'tags' => 'nullable|string|max:500',
         ];
@@ -93,13 +98,20 @@ class Posts extends Component
     {
         $this->validate();
 
+        // Handle image upload
+        $imagePath = $this->image_url; // Keep existing URL if no new upload
+        if ($this->image) {
+            $imagePath = $this->image->store('post_images', 'public');
+            $imagePath = 'storage/' . $imagePath; // Add storage prefix for URL
+        }
+
         $data = [
             'title' => $this->title,
             'content' => $this->content,
             'category' => $this->category,
             'status' => $this->status,
             'is_featured' => $this->is_featured,
-            'image_url' => $this->image_url ?: null,
+            'image_url' => $imagePath ?: null,
         ];
 
         if ($this->editingPostId) {
@@ -144,7 +156,9 @@ class Posts extends Component
         $this->category = 'general';
         $this->status = 'published';
         $this->is_featured = false;
+        $this->image = null;
         $this->image_url = '';
+        $this->tags = '';
     }
 
     public function render()
