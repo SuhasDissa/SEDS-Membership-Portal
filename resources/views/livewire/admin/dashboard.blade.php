@@ -2,167 +2,120 @@
     {{-- Header --}}
     <div class="mb-6">
         <h1 class="text-3xl font-bold text-base-content">Admin Dashboard</h1>
-        <p class="text-base-content/70">Overview of SEDS Mora portal</p>
+        <p class="text-base-content/70">Overview of your SEDS Membership Portal</p>
     </div>
 
-    {{-- Stats Grid --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <x-stat
-            title="Total Members"
-            :value="$this->stats['total_users']"
-            icon="o-users"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Approved Members"
-            :value="$this->stats['approved_users']"
-            icon="o-check-circle"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Pending Approval"
-            :value="$this->stats['pending_users']"
-            icon="o-clock"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Total Contributions"
-            :value="$this->stats['total_contributions']"
-            icon="o-chart-bar"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Pending Contributions"
-            :value="$this->stats['pending_contributions']"
-            icon="o-exclamation-circle"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-        <x-stat
-            title="Total Posts"
-            :value="$this->stats['total_posts']"
-            icon="o-newspaper"
-            class="bg-primary text-primary-content shadow-sm hover:shadow-md transition-shadow"
-        />
-    </div>
+    {{-- Statistics Grid --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Recent Users --}}
-        <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+        {{-- Members Stats --}}
+        <div
+            class="card bg-gradient-to-br from-primary to-primary-focus text-primary-content shadow-lg hover:shadow-xl transition-shadow">
             <div class="card-body">
-                <h2 class="card-title">
-                    <x-icon name="o-user-plus" class="w-6 h-6" />
-                    Recent Members
-                </h2>
-                
-                @if($this->recentUsers->count() > 0)
-                    <div class="space-y-2">
-                        @foreach($this->recentUsers as $user)
-                            <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="avatar placeholder">
-                                        <div class="bg-primary text-primary-content rounded-full w-10">
-                                            <span class="text-sm">{{ $user->initials() }}</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium">{{ $user->name }}</p>
-                                        <p class="text-sm text-base-content/70">{{ $user->email }}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    @if($user->is_approved)
-                                        <span class="badge badge-success badge-sm">Approved</span>
-                                    @else
-                                        <span class="badge badge-warning badge-sm">Pending</span>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="card-title text-3xl font-bold">{{ $this->stats['total_members'] }}</h2>
+                        <p class="opacity-90">Total Members</p>
                     </div>
-                    
-                    <a href="{{ route('admin.members') }}" class="btn btn-outline btn-sm w-full mt-4">
-                        View All Members
-                    </a>
-                @else
-                    <p class="text-center text-base-content/70 py-8">No members yet</p>
+                    <x-icon name="o-users" class="w-16 h-16 opacity-50" />
+                </div>
+                @if($this->stats['pending_members'] > 0)
+                    <div class="mt-4 pt-4 border-t border-primary-content/20">
+                        <p class="text-sm">
+                            <span class="badge badge-warning badge-sm">{{ $this->stats['pending_members'] }}</span>
+                            Pending Approval
+                        </p>
+                    </div>
                 @endif
             </div>
         </div>
 
         {{-- Pending Contributions --}}
-        <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+        <div
+            class="card bg-gradient-to-br from-warning to-warning-focus text-warning-content shadow-lg hover:shadow-xl transition-shadow">
             <div class="card-body">
-                <h2 class="card-title">
-                    <x-icon name="o-clock" class="w-6 h-6" />
-                    Pending Contributions
-                </h2>
-                
-                @if($this->pendingContributions->count() > 0)
-                    <div class="space-y-2">
-                       @foreach($this->pendingContributions as $contribution)
-                            <div class="p-3 bg-base-200 rounded-lg">
-                                <div class="flex items-start justify-between gap-4">
-                                    <div class="flex-1">
-                                        <p class="font-medium">{{ $contribution->title }}</p>
-                                        <p class="text-sm text-base-content/70">{{ $contribution->user->name }}</p>
-                                        <p class="text-xs text-base-content/60 mt-1">{{ $contribution->date->format('M d, Y') }}</p>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button 
-                                            wire:click="approveContribution({{ $contribution->id }})"
-                                            class="btn btn-success btn-sm"
-                                            title="Approve">
-                                            <x-icon name="o-check" class="w-4 h-4" />
-                                        </button>
-                                        <button 
-                                            wire:click="rejectContribution({{ $contribution->id }})"
-                                            wire:confirm="Reject this contribution?"
-                                            class="btn btn-error btn-sm"
-                                            title="Reject">
-                                            <x-icon name="o-x-mark" class="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="card-title text-3xl font-bold">{{ $this->stats['pending_contributions'] }}</h2>
+                        <p class="opacity-90">Pending Contributions</p>
                     </div>
-                    
-                    <a href="{{ route('admin.contributions') }}" class="btn btn-outline btn-sm w-full mt-4">
-                        View All Contributions
+                    <x-icon name="o-clock" class="w-16 h-16 opacity-50" />
+                </div>
+                <div class="mt-4 pt-4 border-t border-warning-content/20">
+                    <a href="{{ route('admin.contributions') }}" class="text-sm hover:underline">
+                        View All Contributions →
                     </a>
-                @else
-                    <p class="text-center text-base-content/70 py-8">No pending contributions</p>
-                @endif
+                </div>
             </div>
         </div>
+
+        {{-- Approved Contributions --}}
+        <div
+            class="card bg-gradient-to-br from-success to-success-focus text-success-content shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="card-title text-3xl font-bold">{{ $this->stats['approved_contributions'] }}</h2>
+                        <p class="opacity-90">Approved Contributions</p>
+                    </div>
+                    <x-icon name="o-check-circle" class="w-16 h-16 opacity-50" />
+                </div>
+            </div>
+        </div>
+
+        {{-- Total Posts --}}
+        <div
+            class="card bg-gradient-to-br from-info to-info-focus text-info-content shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="card-title text-3xl font-bold">{{ $this->stats['total_posts'] }}</h2>
+                        <p class="opacity-90">Total Posts</p>
+                    </div>
+                    <x-icon name="o-newspaper" class="w-16 h-16 opacity-50" />
+                </div>
+                <div class="mt-4 pt-4 border-t border-info-content/20">
+                    <p class="text-sm">
+                        {{ $this->stats['published_posts'] }} Published
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Quick Actions --}}
+        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow col-span-1 md:col-span-2">
+            <div class="card-body">
+                <h3 class="card-title">Quick Actions</h3>
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <a href="{{ route('admin.members') }}" class="btn btn-outline">
+                        <x-icon name="o-users" class="w-5 h-5" />
+                        Manage Members
+                    </a>
+                    <a href="{{ route('admin.contributions') }}" class="btn btn-outline">
+                        <x-icon name="o-chart-bar" class="w-5 h-5" />
+                        Manage Contributions
+                    </a>
+                    <a href="{{ route('admin.posts') }}" class="btn btn-outline">
+                        <x-icon name="o-newspaper" class="w-5 h-5" />
+                        Manage Posts
+                    </a>
+                    <a href="{{ route('admin.activity-logs') }}" class="btn btn-outline">
+                        <x-icon name="o-clipboard-document-list" class="w-5 h-5" />
+                        Activity Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    {{-- Quick Actions --}}
-    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow mt-6">
-        <div class="card-body">
-            <h2 class="card-title">
-                <x-icon name="o-bolt" class="w-6 h-6" />
-                Quick Actions
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                <a href="{{ route('admin.members') }}" class="btn btn-primary">
-                    <x-icon name="o-users" class="w-5 h-5" />
-                    Manage Members
-                </a>
-                <a href="{{ route('admin.contributions') }}" class="btn btn-secondary">
-                    <x-icon name="o-chart-bar" class="w-5 h-5" />
-                    Manage Contributions
-                </a>
-                <a href="{{ route('admin.posts') }}" class="btn btn-accent">
-                    <x-icon name="o-newspaper" class="w-5 h-5" />
-                    Manage Posts
-                </a>
-                <a href="{{ route('settings') }}" class="btn btn-ghost">
-                    <x-icon name="o-cog-6-tooth" class="w-5 h-5" />
-                    Settings
-                </a>
-            </div>
+    {{-- Welcome Message --}}
+    <div class="alert alert-info mt-6">
+        <x-icon name="o-information-circle" class="w-6 h-6" />
+        <div>
+            <h3 class="font-bold">Welcome to the Admin Dashboard!</h3>
+            <div class="text-sm">Use the navigation menu to manage members, contributions, posts, and view activity
+                logs.</div>
         </div>
     </div>
 </div>

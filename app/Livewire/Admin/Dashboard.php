@@ -12,46 +12,13 @@ class Dashboard extends Component
     public function getStatsProperty()
     {
         return [
-            'total_users' => User::count(),
-            'approved_users' => User::where('is_approved', true)->count(),
-            'pending_users' => User::where('is_approved', false)->count(),
-            'total_contributions' => Contribution::count(),
+            'total_members' => User::where('is_approved', true)->count(),
+            'pending_members' => User::where('is_approved', false)->count(),
             'pending_contributions' => Contribution::where('status', 'pending')->count(),
             'approved_contributions' => Contribution::where('status', 'approved')->count(),
-            'rejected_contributions' => Contribution::where('status', 'rejected')->count(),
             'total_posts' => Post::count(),
             'published_posts' => Post::where('status', 'published')->count(),
         ];
-    }
-
-    public function getRecentUsersProperty()
-    {
-        return User::latest()->take(5)->get();
-    }
-
-    public function getPendingContributionsProperty()
-    {
-        return Contribution::with('user')
-            ->where('status', 'pending')
-            ->latest()
-            ->take(5)
-            ->get();
-    }
-
-    public function approveContribution($contributionId)
-    {
-        $contribution = Contribution::findOrFail($contributionId);
-        $contribution->update(['status' => 'approved', 'rejection_reason' => null]);
-
-        session()->flash('success', "Contribution approved successfully!");
-    }
-
-    public function rejectContribution($contributionId)
-    {
-        $contribution = Contribution::findOrFail($contributionId);
-        $contribution->update(['status' => 'rejected', 'rejection_reason' => 'Rejected from dashboard']);
-
-        session()->flash('success', "Contribution rejected.");
     }
 
     public function render()
