@@ -141,6 +141,9 @@
                     <x-input label="Image URL (Optional)" wire:model="image_url"
                         placeholder="https://example.com/image.jpg" />
 
+                    <x-input label="Tags (Optional)" wire:model="tags" placeholder="space, technology, research"
+                        hint="Separate tags with commas. Tags help organize and categorize posts." />
+
                     <x-checkbox label="Featured Post" wire:model="is_featured"
                         hint="Featured posts appear at the top of the feed" />
                 </div>

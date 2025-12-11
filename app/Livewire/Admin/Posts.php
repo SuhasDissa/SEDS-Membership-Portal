@@ -20,6 +20,7 @@ class Posts extends Component
     public $status = 'published';
     public $is_featured = false;
     public $image_url = '';
+    public $tags = ''; // Comma-separated tags
 
     protected function rules()
     {
@@ -30,6 +31,7 @@ class Posts extends Component
             'status' => 'required|in:draft,published',
             'is_featured' => 'boolean',
             'image_url' => 'nullable|url',
+            'tags' => 'nullable|string|max:500',
         ];
     }
 
@@ -82,6 +84,7 @@ class Posts extends Component
         $this->status = $post->status;
         $this->is_featured = $post->is_featured;
         $this->image_url = $post->image_url ?? '';
+        $this->tags = $post->tags->pluck('name')->implode(', '); // Load tags
 
         $this->showModal = true;
     }
@@ -102,10 +105,12 @@ class Posts extends Component
         if ($this->editingPostId) {
             $post = Post::findOrFail($this->editingPostId);
             $post->update($data);
+            $post->syncTagsFromString($this->tags); // Sync tags
             session()->flash('success', 'Post updated successfully!');
         } else {
             $data['user_id'] = auth()->id();
-            Post::create($data);
+            $post = Post::create($data);
+            $post->syncTagsFromString($this->tags); // Sync tags
             session()->flash('success', 'Post created successfully!');
         }
 

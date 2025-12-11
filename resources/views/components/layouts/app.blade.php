@@ -88,6 +88,8 @@
                             <x-menu-item title="Members" icon="o-users" link="{{ route('admin.members') }}" />
                             <x-menu-item title="Contributions" icon="o-chart-bar" link="{{ route('admin.contributions') }}" />
                             <x-menu-item title="Posts" icon="o-newspaper" link="{{ route('admin.posts') }}" />
+                            <x-menu-item title="Activity Logs" icon="o-clipboard-document-list"
+                                link="{{ route('admin.activity-logs') }}" />
                         </x-menu-sub>
                     @endif
                 @endif

@@ -37,10 +37,34 @@
     <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-up" data-aos-delay="200">
         <div class="card-body">
             @if($this->contributions->count() > 0)
+                {{-- Bulk Actions Toolbar --}}
+                @if(count($selectedIds) > 0)
+                    <div class="alert alert-info mb-4 flex justify-between items-center">
+                        <span><strong>{{ count($selectedIds) }}</strong> contribution(s) selected</span>
+                        <div class="flex gap-2">
+                            <button wire:click="bulkApprove" class="btn btn-success btn-sm">
+                                <x-icon name="o-check" class="w-4 h-4" /> Approve
+                            </button>
+                            <button wire:click="openBulkRejectModal" class="btn btn-error btn-sm">
+                                <x-icon name="o-x-mark" class="w-4 h-4" /> Reject
+                            </button>
+                            <button wire:click="bulkDelete" wire:confirm="Delete {{ count($selectedIds) }} selected contributions?" class="btn btn-ghost btn-sm">
+                                <x-icon name="o-trash" class="w-4 h-4" /> Delete
+                            </button>
+                        </div>
+                    </div>
+                @endif
+                
                 <div class="overflow-x-auto">
                     <table class="table table-zebra">
                         <thead>
                             <tr>
+                                <th>
+                                    <input type="checkbox" 
+                                           wire:model.live="selectAll" 
+                                           class="checkbox checkbox-sm" 
+                                           title="Select All" />
+                                </th>
                                 <th>Title</th>
                                 <th>Member</th>
                                 <th>Date</th>
@@ -50,7 +74,13 @@
                         </thead>
                         <tbody>
                             @foreach($this->contributions as $contribution)
-                                <tr>
+                                <tr wire:key="contribution-{{ $contribution->id }}">
+                                    <td>
+                                        <input type="checkbox" 
+                                               wire:model.live="selectedIds" 
+                                               value="{{ $contribution->id }}" 
+                                               class="checkbox checkbox-sm" />
+                                    </td>
                                     <td>
                                         <div>
                                             <p class="font-medium">{{ $contribution->title }}</p>
@@ -132,15 +162,42 @@
                     placeholder="Provide a reason for rejection (will be visible to the member)..." rows="4"
                     hint="This will be sent to the member" />
 
-                <!-- <div class="modal-action">
+                <div class="modal-action">
                     <button wire:click="rejectContribution" class="btn btn-error">
                         <x-icon name="o-x-mark" class="w-5 h-5" />
                         Reject
                     </button>
                     <button wire:click="$set('showRejectModal', false)" class="btn btn-ghost">Cancel</button>
-                </div> -->
+                </div>
             </div>
             <div class="modal-backdrop" wire:click="$set('showRejectModal', false)"></div>
+        </div>
+    @endif
+
+    {{-- Bulk Reject Modal --}}
+    @if($showBulkRejectModal)
+        <div class="modal modal-open">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg mb-4">Bulk Reject Contributions</h3>
+                <p class="mb-4">Rejecting <strong>{{ count($selectedIds) }}</strong> contribution(s)</p>
+                
+                <x-textarea
+                    label="Rejection Reason"
+                    wire:model="bulkRejectionReason"
+                    placeholder="Provide a reason for rejection (will be applied to all selected contributions)..."
+                    rows="4"
+                    hint="This reason will be sent to all selected members"
+                />
+
+                <div class="modal-action">
+                    <button wire:click="bulkReject" class="btn btn-error">
+                        <x-icon name="o-x-mark" class="w-5 h-5" />
+                        Reject All
+                    </button>
+                    <button wire:click="$set('showBulkRejectModal', false)" class="btn btn-ghost">Cancel</button>
+                </div>
+            </div>
+            <div class="modal-backdrop" wire:click="$set('showBulkRejectModal', false)"></div>
         </div>
     @endif
 </div>

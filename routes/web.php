@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
             })->name('members.show');
             Route::view('/contributions', 'pages.admin.contributions')->name('contributions');
             Route::view('/posts', 'pages.admin.posts')->name('posts');
+            Route::view('/activity-logs', 'pages.admin.activity-logs')->name('activity-logs');
         });
     });
 });
