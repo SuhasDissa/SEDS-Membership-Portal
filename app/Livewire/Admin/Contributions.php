@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Contribution;
 use App\Models\ActivityLog;
+use App\Models\Notification;
 use Livewire\Component;
 
 class Contributions extends Component
@@ -63,6 +64,14 @@ class Contributions extends Component
             'member' => $contribution->user->name,
         ]);
 
+        // Send notification to user
+        Notification::notify(
+            $contribution->user_id,
+            'contribution_approved',
+            '🎉 Contribution Approved!',
+            "Your contribution '{$contribution->title}' has been approved and is now visible to all members."
+        );
+
         session()->flash('success', "Contribution '{$contribution->title}' has been approved!");
     }
 
@@ -84,6 +93,15 @@ class Contributions extends Component
             'status' => 'rejected',
             'rejection_reason' => $this->rejectionReason,
         ]);
+
+        // Send notification to user
+        Notification::notify(
+            $contribution->user_id,
+            'contribution_rejected',
+            '❌ Contribution Rejected',
+            "Your contribution '{$contribution->title}' was not approved. Reason: {$this->rejectionReason}",
+            ['rejection_reason' => $this->rejectionReason]
+        );
 
         session()->flash('success', "Contribution '{$contribution->title}' has been rejected.");
 

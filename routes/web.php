@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
         Route::view('/profile', 'pages.profile.show')->name('profile.show');
         Route::view('/settings', 'pages.settings.index')->name('settings');
 
+        // Notifications
+        Route::view('/notifications', 'pages.notifications')->name('notifications');
+
         // Contributions
         Route::view('/contributions', 'pages.contributions.index')->name('contributions.index');
         Route::view('/contributions/create', 'pages.contributions.create')->name('contributions.create');

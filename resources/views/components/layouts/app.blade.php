@@ -32,6 +32,9 @@
             <x-seds-logo />
         </x-slot:brand>
         <x-slot:actions>
+            @auth
+                <livewire:notification-bell />
+            @endauth
             <label for="main-drawer" class="lg:hidden me-3">
                 <x-icon name="o-bars-3" class="cursor-pointer" />
             </label>
@@ -75,6 +78,18 @@
 
                     {{-- Profile --}}
                     <x-menu-item title="My Profile" icon="o-user" link="{{ route('profile.show') }}" />
+                    
+                    {{-- Notifications --}}
+                    <x-menu-item title="Notifications" icon="o-bell" link="{{ route('notifications') }}">
+                        <x-slot:actions>
+                            @php
+                                $unreadCount = auth()->user()->notifications()->unread()->count();
+                            @endphp
+                            @if($unreadCount > 0)
+                                <x-badge value="{{ $unreadCount > 9 ? '9+' : $unreadCount }}" class="badge-error badge-sm" />
+                            @endif
+                        </x-slot:actions>
+                    </x-menu-item>
 
                     {{-- Settings --}}
                     <x-menu-item title="Settings" icon="o-cog-6-tooth" link="{{ route('settings') }}" />
