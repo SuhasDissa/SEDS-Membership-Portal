@@ -94,7 +94,7 @@
                     {{-- Settings --}}
                     <x-menu-item title="Settings" icon="o-cog-6-tooth" link="{{ route('settings') }}" />
 
-                    @if($user->is_admin)
+                    @if($user->isAdmin())
                         <x-menu-separator />
 
                         {{-- Admin Section --}}

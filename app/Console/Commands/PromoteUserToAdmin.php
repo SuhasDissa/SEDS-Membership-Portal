@@ -11,14 +11,14 @@ class PromoteUserToAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'user:promote {email}';
+    protected $signature = 'user:promote {email} {--role=admin : Role to assign (admin, board, member)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Promote a user to admin by their email address';
+    protected $description = 'Promote a user to a specific role by their email address';
 
     /**
      * Execute the console command.
@@ -26,6 +26,20 @@ class PromoteUserToAdmin extends Command
     public function handle()
     {
         $email = $this->argument('email');
+        $roleOption = strtolower($this->option('role'));
+        
+        // Map role option to role value
+        $roleValue = match($roleOption) {
+            'admin' => \App\Enums\UserRole::ADMIN->value,
+            'board', 'board_member', 'boardmember' => \App\Enums\UserRole::BOARD_MEMBER->value,
+            'member' => \App\Enums\UserRole::MEMBER->value,
+            default => null,
+        };
+        
+        if ($roleValue === null) {
+            $this->error("Invalid role. Use 'admin', 'board', or 'member'.");
+            return 1;
+        }
         
         $user = \App\Models\User::where('email', $email)->first();
         
@@ -34,14 +48,16 @@ class PromoteUserToAdmin extends Command
             return 1;
         }
         
-        if ($user->is_admin) {
-            $this->info("User {$user->name} is already an admin.");
+        if ($user->role === $roleValue) {
+            $roleLabel = \App\Enums\UserRole::fromValue($roleValue)->label();
+            $this->info("User {$user->name} is already a {$roleLabel}.");
             return 0;
         }
         
-        $user->update(['is_admin' => true]);
+        $user->update(['role' => $roleValue]);
         
-        $this->info("User {$user->name} has been promoted to admin successfully!");
+        $roleLabel = \App\Enums\UserRole::fromValue($roleValue)->label();
+        $this->info("User {$user->name} has been promoted to {$roleLabel} successfully!");
         return 0;
     }
 }

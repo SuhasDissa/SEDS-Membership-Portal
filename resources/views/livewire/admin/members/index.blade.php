@@ -99,11 +99,15 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($user->is_admin)
-                                        <span class="badge badge-accent">Admin</span>
-                                    @else
-                                        <span class="badge badge-ghost">Member</span>
-                                    @endif
+                                    @php
+                                        $roleLabel = $user->getRoleLabel();
+                                        $badgeClass = match($user->role) {
+                                            \App\Enums\UserRole::ADMIN->value => 'badge-accent',
+                                            \App\Enums\UserRole::BOARD_MEMBER->value => 'badge-info',
+                                            default => 'badge-ghost',
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">{{ $roleLabel }}</span>
                                 </td>
                                 <td>
                                     <div class="flex gap-2">
@@ -128,7 +132,7 @@
                                         <button 
                                             wire:click="toggleAdmin({{ $user->id }})" 
                                             class="btn btn-accent btn-xs"
-                                            title="{{ $user->is_admin ? 'Remove Admin' : 'Make Admin' }}"
+                                            title="Change Role (Current: {{ $user->getRoleLabel() }})"
                                         >
                                             <x-icon name="o-shield-check" class="w-4 h-4" />
                                         </button>

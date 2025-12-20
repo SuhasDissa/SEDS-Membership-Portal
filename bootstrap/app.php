@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'profile.completed' => \App\Http\Middleware\EnsureProfileCompleted::class,
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+        
+        // Add SetUserDataCookie to web middleware group
+        $middleware->web(append: [
+            \App\Http\Middleware\SetUserDataCookie::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -36,9 +36,15 @@ $user = computed(fn () => auth()->user());
                         <span class="badge badge-warning">Pending Approval</span>
                     @endif
                     
-                    @if($this->user->is_admin)
-                        <span class="badge badge-accent">Admin</span>
-                    @endif
+                    @php
+                        $roleLabel = $this->user->getRoleLabel();
+                        $badgeClass = match($this->user->role) {
+                            \App\Enums\UserRole::ADMIN->value => 'badge-accent',
+                            \App\Enums\UserRole::BOARD_MEMBER->value => 'badge-info',
+                            default => 'badge-ghost',
+                        };
+                    @endphp
+                    <span class="badge {{ $badgeClass }}">{{ $roleLabel }}</span>
                 </div>
                 
                 <a href="{{ route('settings') }}" class="btn btn-primary w-full mt-4">

@@ -45,7 +45,9 @@ class Index extends Component
             'total_users' => User::count(),
             'approved_users' => User::where('is_approved', true)->count(),
             'pending_users' => User::where('is_approved', false)->count(),
-            'admin_users' => User::where('is_admin', true)->count(),
+            'admin_users' => User::where('role', \App\Enums\UserRole::ADMIN->value)->count(),
+            'board_members' => User::where('role', \App\Enums\UserRole::BOARD_MEMBER->value)->count(),
+            'regular_members' => User::where('role', \App\Enums\UserRole::MEMBER->value)->count(),
         ];
     }
 
@@ -68,10 +70,19 @@ class Index extends Component
     public function toggleAdmin($userId)
     {
         $user = User::find($userId);
-        $user->update(['is_admin' => !$user->is_admin]);
         
-        $status = $user->is_admin ? 'promoted to admin' : 'removed from admin';
-        session()->flash('success', "User {$user->name} has been {$status}!");
+        // Cycle through roles: Member -> Board Member -> Admin -> Member
+        $newRole = match($user->role) {
+            \App\Enums\UserRole::MEMBER->value => \App\Enums\UserRole::BOARD_MEMBER->value,
+            \App\Enums\UserRole::BOARD_MEMBER->value => \App\Enums\UserRole::ADMIN->value,
+            \App\Enums\UserRole::ADMIN->value => \App\Enums\UserRole::MEMBER->value,
+            default => \App\Enums\UserRole::MEMBER->value,
+        };
+        
+        $user->update(['role' => $newRole]);
+        
+        $roleLabel = \App\Enums\UserRole::fromValue($newRole)->label();
+        session()->flash('success', "User {$user->name} has been changed to {$roleLabel}!");
     }
 
     public function render()

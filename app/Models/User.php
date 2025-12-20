@@ -94,7 +94,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'bio',
         'skills',
         'interests',
-        'is_admin',
+        'role',
         'is_approved',
         'google_id',
     ];
@@ -121,7 +121,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
+            'role' => 'integer',
             'is_approved' => 'boolean',
             'skills' => 'array',
             'interests' => 'array',
@@ -199,5 +199,54 @@ class User extends Authenticatable implements MustVerifyEmail
     public function activityLogs()
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole(\App\Enums\UserRole $role): bool
+    {
+        return $this->role === $role->value;
+    }
+
+    /**
+     * Check if user has minimum required role level
+     */
+    public function hasMinimumRole(\App\Enums\UserRole $role): bool
+    {
+        return $this->role >= $role->value;
+    }
+
+    /**
+     * Check if user is an admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role >= \App\Enums\UserRole::ADMIN->value;
+    }
+
+    /**
+     * Check if user is a board member or higher
+     */
+    public function isBoardMember(): bool
+    {
+        return $this->role >= \App\Enums\UserRole::BOARD_MEMBER->value;
+    }
+
+    /**
+     * Check if user is a member
+     */
+    public function isMember(): bool
+    {
+        return $this->role >= \App\Enums\UserRole::MEMBER->value;
+    }
+
+    /**
+     * Get the user's role label
+     */
+    public function getRoleLabel(): string
+    {
+        $roleEnum = \App\Enums\UserRole::fromValue($this->role);
+        return $roleEnum ? $roleEnum->label() : 'Unknown';
     }
 }

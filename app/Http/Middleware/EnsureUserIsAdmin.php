@@ -17,8 +17,8 @@ class EnsureUserIsAdmin
     {
         $user = $request->user();
         
-        // Check if user is an admin
-        if (!$user || !$user->is_admin) {
+        // Check if user has admin role or higher
+        if (!$user || !$user->hasMinimumRole(\App\Enums\UserRole::ADMIN)) {
             abort(403, 'Unauthorized access.');
         }
         
