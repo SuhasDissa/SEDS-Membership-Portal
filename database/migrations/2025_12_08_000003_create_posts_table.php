@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->string('category')->default('general');
+            $table->enum('status', ['draft', 'published'])->default('published');
+            $table->boolean('is_featured')->default(false);
             $table->text('content');
             $table->string('image_url')->nullable();
             $table->timestamps();
