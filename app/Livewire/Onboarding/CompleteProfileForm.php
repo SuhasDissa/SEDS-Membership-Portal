@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Onboarding;
 
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -18,10 +19,20 @@ class CompleteProfileForm extends Component
 
     public function rules(): array
     {
+        $facultyNames = collect(User::UNIVERSITY_DATA['faculties'])->pluck('name')->toArray();
+        $departmentNames = [];
+        
+        if ($this->faculty) {
+            $facultyData = collect(User::UNIVERSITY_DATA['faculties'])->firstWhere('name', $this->faculty);
+            if ($facultyData) {
+                $departmentNames = $facultyData['departments'];
+            }
+        }
+
         return [
             'university_id' => 'required|string|unique:users,university_id|regex:/^[0-9]{6}[A-Z]$/',
-            'faculty' => 'required|in:Engineering,IT,Architecture,Business,Science,Other',
-            'department' => 'required|string|min:3|max:255',
+            'faculty' => 'required|in:' . implode(',', $facultyNames),
+            'department' => 'required|in:' . implode(',', $departmentNames),
             'phone' => 'required|string|regex:/^[+]?[0-9\s\-()]{7,20}$/',
             'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ];
@@ -31,7 +42,6 @@ class CompleteProfileForm extends Component
     {
         return [
             'university_id.regex' => 'University ID must be 6 digits followed by a letter (e.g., 230152X)',
-            'department.min' => 'Department name must be at least 3 characters',
             'phone.regex' => 'Please enter a valid phone number (e.g., +94 77 123 4567)',
             'avatar.mimes' => 'Avatar must be a JPEG, JPG, PNG, or WebP image',
         ];
@@ -47,16 +57,35 @@ class CompleteProfileForm extends Component
         }
     }
 
+    public function updatedFaculty()
+    {
+        $this->department = '';
+    }
+
     public function faculties(): array
     {
-        return [
-            ['id' => 'Engineering', 'name' => 'Engineering'],
-            ['id' => 'IT', 'name' => 'Information Technology'],
-            ['id' => 'Architecture', 'name' => 'Architecture'],
-            ['id' => 'Business', 'name' => 'Business'],
-            ['id' => 'Science', 'name' => 'Science'],
-            ['id' => 'Other', 'name' => 'Other'],
-        ];
+        return collect(User::UNIVERSITY_DATA['faculties'])->map(fn($f) => [
+            'id' => $f['name'],
+            'name' => $f['name']
+        ])->toArray();
+    }
+
+    public function departments(): array
+    {
+        if (!$this->faculty) {
+            return [];
+        }
+
+        $facultyData = collect(User::UNIVERSITY_DATA['faculties'])->firstWhere('name', $this->faculty);
+
+        if (!$facultyData) {
+            return [];
+        }
+
+        return collect($facultyData['departments'])->map(fn($d) => [
+            'id' => $d,
+            'name' => $d
+        ])->toArray();
     }
 
     public function completeProfile()

@@ -24,18 +24,24 @@
                                 hint="Email cannot be changed" readonly disabled inline />
                         </div>
 
+                        {{-- University --}}
+                        <div class="md:col-span-2">
+                            <x-input label="University" value="{{ \App\Models\User::UNIVERSITY_DATA['university'] }}" icon="o-academic-cap" inline readonly />
+                        </div>
+
                         {{-- University ID --}}
                         <x-input label="University ID" wire:model.blur="university_id" icon="o-identification"
                             hint="Format: 6 digits followed by a letter (e.g., 230152X)" inline />
 
                         {{-- Faculty --}}
-                        <x-select label="Faculty" wire:model="faculty" :options="$this->faculties()"
+                        <x-select label="Faculty" wire:model.live="faculty" :options="$this->faculties()"
                             icon="o-academic-cap" inline />
 
                         {{-- Department --}}
                         <div class="md:col-span-2">
-                            <x-input label="Department" wire:model.blur="department" icon="o-building-library"
-                                hint="At least 3 characters" inline />
+                            <x-select label="Department" wire:model.live="department" :options="$this->departments()"
+                                icon="o-building-library" placeholder="Select your department"
+                                :disabled="!$faculty" inline />
                         </div>
 
                         {{-- Phone --}}

@@ -12,15 +12,12 @@ class Index extends Component
 
     public function getFacultiesProperty()
     {
-        return [
-            ['id' => '', 'name' => 'All Faculties'],
-            ['id' => 'Engineering', 'name' => 'Engineering'],
-            ['id' => 'IT', 'name' => 'Information Technology'],
-            ['id' => 'Architecture', 'name' => 'Architecture'],
-            ['id' => 'Business', 'name' => 'Business'],
-            ['id' => 'Science', 'name' => 'Science'],
-            ['id' => 'Other', 'name' => 'Other'],
-        ];
+        $faculties = collect(User::UNIVERSITY_DATA['faculties'])->map(fn($f) => [
+            'id' => $f['name'],
+            'name' => $f['name']
+        ])->toArray();
+
+        return array_merge([['id' => '', 'name' => 'All Faculties']], $faculties);
     }
 
     public function getUsersProperty()

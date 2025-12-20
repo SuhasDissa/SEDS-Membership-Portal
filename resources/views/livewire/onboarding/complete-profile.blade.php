@@ -2,6 +2,11 @@
     <div class="card-body">
         <form wire:submit="completeProfile">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- University --}}
+                <div class="md:col-span-2">
+                    <x-input label="University" value="{{ \App\Models\User::UNIVERSITY_DATA['university'] }}" icon="o-academic-cap" inline readonly />
+                </div>
+
                 {{-- University ID --}}
                 <div class="md:col-span-2">
                     <x-input label="University ID" wire:model.blur="university_id" icon="o-identification"
@@ -10,14 +15,15 @@
 
                 {{-- Faculty --}}
                 <div class="md:col-span-2">
-                    <x-select label="Faculty" wire:model="faculty" :options="$this->faculties()"
+                    <x-select label="Faculty" wire:model.live="faculty" :options="$this->faculties()"
                         placeholder="Select your faculty" icon="o-academic-cap" inline />
                 </div>
 
                 {{-- Department --}}
                 <div class="md:col-span-2">
-                    <x-input label="Department" wire:model.blur="department" icon="o-building-library"
-                        placeholder="e.g., Computer Science & Engineering" hint="At least 3 characters" inline />
+                    <x-select label="Department" wire:model.live="department" :options="$this->departments()"
+                        placeholder="Select your department" icon="o-building-library" 
+                        :disabled="!$faculty" inline />
                 </div>
 
                 {{-- Phone --}}

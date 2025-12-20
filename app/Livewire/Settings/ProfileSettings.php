@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Hash;
@@ -27,11 +28,21 @@ class ProfileSettings extends Component
 
     public function rules()
     {
+        $facultyNames = collect(User::UNIVERSITY_DATA['faculties'])->pluck('name')->toArray();
+        $departmentNames = [];
+        
+        if ($this->faculty) {
+            $facultyData = collect(User::UNIVERSITY_DATA['faculties'])->firstWhere('name', $this->faculty);
+            if ($facultyData) {
+                $departmentNames = $facultyData['departments'];
+            }
+        }
+
         return [
             'name' => 'required|string|min:3|max:255|regex:/^[a-zA-Z\s]+$/',
             'university_id' => 'required|string|regex:/^[0-9]{6}[A-Z]$/',
-            'faculty' => 'required|in:Engineering,IT,Architecture,Business,Science,Other',
-            'department' => 'required|string|min:3|max:255',
+            'faculty' => 'required|in:' . implode(',', $facultyNames),
+            'department' => 'required|in:' . implode(',', $departmentNames),
             'phone' => 'required|string|regex:/^[+]?[0-9\s\-()]{7,20}$/',
             'bio' => 'nullable|string|max:500',
             'skills' => 'nullable|string|max:500',
@@ -48,7 +59,6 @@ class ProfileSettings extends Component
             'name.regex' => 'Name must only contain letters and spaces',
             'name.min' => 'Name must be at least 3 characters',
             'university_id.regex' => 'University ID must be 6 digits followed by a letter (e.g., 230152X)',
-            'department.min' => 'Department name must be at least 3 characters',
             'phone.regex' => 'Please enter a valid phone number (e.g., +94 77 123 4567)',
             'avatar.mimes' => 'Avatar must be a JPEG, JPG, PNG, or WebP image',
             'current_password.required_with' => 'Current password is required to set a new password',
@@ -57,16 +67,35 @@ class ProfileSettings extends Component
         ];
     }
 
+    public function updatedFaculty()
+    {
+        $this->department = '';
+    }
+
     public function faculties()
     {
-        return [
-            ['id' => 'Engineering', 'name' => 'Engineering'],
-            ['id' => 'IT', 'name' => 'Information Technology'],
-            ['id' => 'Architecture', 'name' => 'Architecture'],
-            ['id' => 'Business', 'name' => 'Business'],
-            ['id' => 'Science', 'name' => 'Science'],
-            ['id' => 'Other', 'name' => 'Other'],
-        ];
+        return collect(User::UNIVERSITY_DATA['faculties'])->map(fn($f) => [
+            'id' => $f['name'],
+            'name' => $f['name']
+        ])->toArray();
+    }
+
+    public function departments()
+    {
+        if (!$this->faculty) {
+            return [];
+        }
+
+        $facultyData = collect(User::UNIVERSITY_DATA['faculties'])->firstWhere('name', $this->faculty);
+
+        if (!$facultyData) {
+            return [];
+        }
+
+        return collect($facultyData['departments'])->map(fn($d) => [
+            'id' => $d,
+            'name' => $d
+        ])->toArray();
     }
 
     public function mount()

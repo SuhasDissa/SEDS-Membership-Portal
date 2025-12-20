@@ -14,6 +14,69 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
+    public const UNIVERSITY_DATA = [
+        "university" => "University of Moratuwa, Sri Lanka",
+        "faculties" => [
+            [
+                "name" => "Faculty of Architecture",
+                "departments" => [
+                    "Department of Architecture",
+                    "Department of Building Economics",
+                    "Department of Town and Country Planning",
+                    "Department of Integrated Design"
+                ]
+            ],
+            [
+                "name" => "Faculty of Engineering",
+                "departments" => [
+                    "Department of Chemical and Process Engineering",
+                    "Department of Civil Engineering",
+                    "Department of Computer Science and Engineering",
+                    "Department of Earth Resources Engineering",
+                    "Department of Electrical Engineering",
+                    "Department of Electronic and Telecommunication Engineering",
+                    "Department of Materials Science and Engineering",
+                    "Department of Mechanical Engineering",
+                    "Department of Textile and Apparel Engineering",
+                    "Department of Transport Management and Logistic Engineering"
+                ]
+            ],
+            [
+                "name" => "Faculty of Information Technology",
+                "departments" => [
+                    "Department of Information Technology",
+                    "Department of Computational Mathematics",
+                    "Department of Interdisciplinary Studies"
+                ]
+            ],
+            [
+                "name" => "Faculty of Business",
+                "departments" => [
+                    "Department of Decision Sciences",
+                    "Department of Industrial Management",
+                    "Department of Management of Technology"
+                ]
+            ],
+            [
+                "name" => "Faculty of Medicine",
+                "departments" => [
+                    "Department of Anatomy",
+                    "Department of Biochemistry and Clinical Chemistry",
+                    "Department of Medical Education",
+                    "Department of Medical Technology",
+                    "Department of Medicine and Mental Health",
+                    "Department of Microbiology and Parasitology",
+                    "Department of Pathology and Forensic Medicine",
+                    "Department of Pediatrics and Neonatology",
+                    "Department of Pharmacology",
+                    "Department of Physiology",
+                    "Department of Public Health and Family Medicine",
+                    "Department of Surgery and Anesthesia"
+                ]
+            ]
+        ]
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
