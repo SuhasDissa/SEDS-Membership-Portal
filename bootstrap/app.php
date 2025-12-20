@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
         
+        // Exclude seds_user_data cookie from encryption so it's readable by JavaScript
+        $middleware->encryptCookies(except: [
+            'seds_user_data',
+        ]);
+        
         // Add SetUserDataCookie to web middleware group
         $middleware->web(append: [
             \App\Http\Middleware\SetUserDataCookie::class,
