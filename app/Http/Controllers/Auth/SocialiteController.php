@@ -55,6 +55,7 @@ class SocialiteController extends Controller
                     'avatar_url' => $avatarUrl,
                     'email_verified_at' => now(),
                     'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(32)),
+                    'role' => \App\Enums\UserRole::MEMBER->value,
                 ]);
             }
 

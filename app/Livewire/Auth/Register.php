@@ -38,6 +38,7 @@ class Register extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'role' => \App\Enums\UserRole::MEMBER->value,
         ]);
 
         auth()->login($user);
